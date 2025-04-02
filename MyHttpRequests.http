@@ -1,0 +1,8 @@
+GET localhost:8000/v1/healthz
+###
+POST localhost:8000/v1/createUser
+Content-Type: application/json
+
+{
+  "name": "danilkompaniets"
+}

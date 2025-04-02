@@ -1,2 +1,8 @@
 .idea/
+
 go-rss
+
+.env
+.env.*
+
+vendor/
