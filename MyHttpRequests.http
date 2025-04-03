@@ -1,8 +1,47 @@
 GET localhost:8000/v1/healthz
+
 ###
-POST localhost:8000/v1/createUser
+
+POST localhost:8000/v1/users
 Content-Type: application/json
 
 {
   "name": "danilkompaniets"
 }
+
+###
+
+GET localhost:8000/v1/users
+Authorization: ApiKey 23e002ca4df1887683a3f2bf32a4712e5ef4135de1a23a27359c12bd84b9b455
+
+###
+
+POST localhost:8000/v1/feed
+Authorization: ApiKey 23e002ca4df1887683a3f2bf32a4712e5ef4135de1a23a27359c12bd84b9b455
+Content-Type: application/json
+
+{
+  "name": "my asdaaaaasd",
+  "url": "https://asdasdasdasd.un.org/feed/subsasdasdasdcribe/ru/newasdasds/topic/law-and-crime-prevention/feed/rss.xml"
+}
+
+###
+
+GET localhost:8000/v1/feed
+
+###
+
+POST localhost:8000/v1/feed-follows
+Authorization: ApiKey 23e002ca4df1887683a3f2bf32a4712e5ef4135de1a23a27359c12bd84b9b455
+Content-Type: application/json
+
+{
+  "feed_id": "3c9a0406-5e1b-4844-a3c4-b77e973c96ab"
+}
+
+###
+
+GET localhost:8000/v1/posts
+Authorization: ApiKey 23e002ca4df1887683a3f2bf32a4712e5ef4135de1a23a27359c12bd84b9b455
+
+
