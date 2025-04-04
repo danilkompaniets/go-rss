@@ -1,36 +1,34 @@
-# Build stage
 FROM golang:1.24.1-alpine AS builder
 
 WORKDIR /app
 
-RUN apk add --no-cache git
-RUN go install github.com/sqlc-dev/sqlc/cmd/sqlc@v1.24.0
+RUN apk add --no-cache git gcc musl-dev libc-dev
+RUN go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 
 COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . .
 
+ENV CGO_ENABLED=1
 RUN sqlc generate && \
     go mod tidy && \
     go mod verify
 
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+# Build a statically linked binary
+RUN CGO_ENABLED=1 GOOS=linux \
     go build \
-    -ldflags="-s -w -X main.Version=$(git describe --tags --always)" \
+    -ldflags="-linkmode external -extldflags -static" \
     -trimpath \
-    -o api-golang .
+    -o go-rss .
 
-FROM gcr.io/distroless/static-debian12:nonroot AS production
+FROM scratch AS production
 
 ENV GIN_MODE=release \
     PORT=8000
 
-COPY --from=builder --chown=nonroot:nonroot /app/api-golang /api-golang
+COPY --from=builder /app/go-rss /go-rss
 
-HEALTHCHECK --interval=30s --timeout=3s \
-    CMD ["/api-golang", "healthz"]
+EXPOSE 8000
 
-USER nonroot:nonroot
-EXPOSE $PORT
-ENTRYPOINT ["/api-golang"]
+CMD ["/go-rss"]

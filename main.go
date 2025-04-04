@@ -40,7 +40,7 @@ func main() {
 	port := os.Getenv("PORT")
 
 	if port == "" {
-		log.Fatal("PORT environment variable not set")
+		log.Println("PORT environment variable not set")
 	}
 
 	router := chi.NewRouter()
@@ -50,20 +50,16 @@ func main() {
 	dbName := os.Getenv("POSTGRES_DB")
 	dbHost := os.Getenv("DB_HOST")
 
-	if dbHost == "" {
-		log.Fatal("environment variable not set")
-	}
-
 	dbUrl := fmt.Sprintf("postgres://%v:%v@%v:5432/%v?sslmode=disable", dbUser, dbPassword, dbHost, dbName)
 
 	conn, err := sql.Open("postgres", dbUrl)
 	if err != nil {
-		log.Fatal("Cannot connect to database: ", err)
+		log.Println("Cannot connect to database: ", err)
 	}
 
 	err = startDbMigrations(conn)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
 	apiConfig := apiConfig{
